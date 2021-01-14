@@ -1,0 +1,134 @@
+<!DOCTYPE HTML>
+<!--
+	Spatial by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+<head>
+	<title>Heather Huntley</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="shortcut icon" href="icon.ico">
+	<link rel="stylesheet" href="assets/css/main.css" />
+</head>
+	<body>
+
+		<!-- Header -->
+			<header id="header">
+				<nav id="nav">
+					<ul>
+						<li><a href="index.html">Home</a></li>
+						<li><a href="self.html">Autonomous Car</a></li>
+						<li><a href="eco.html">Ecosystem Prediction</a></li>
+					</ul>
+				</nav>
+			</header>
+
+			<a href="#menu" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+
+		<!-- Main -->
+			<section id="main" class="wrapper">
+				<div class="container">
+
+					<header class="major special">
+						<h2>Self Driving Car</h2>
+						<p>Completed December 2020</p>
+					</header>
+
+					<a href="#" class="image fit"><img src="images/race.jpg" alt="" /></a>
+					<p>Initially the goal of our project was to design an autonomous vehicle that would utilize DonkeyAI framework, open CV, and sensors to detect and gather tennis balls in one area to facilitate collecting them after each set. Due to COVID-19, the scope of our project was pivoted to create a ROS package that enables the RoboCar to use images taken through its external camera to be processed through a mask and proportional-integral-derivative tuning in order to read the yellow lines on the external track and drive autonomously; the RoboCar uses a webcam to read the yellow lines and compute a centroidal value that it follows.</p>
+
+					<p> In order to prep for this project I took numerous classes on ROS from Robot Ignite Academy.
+					<h4>hardware</h4>
+					<a href="#" class="image fit"><img src="images/hard.png" alt="" /></a>
+
+					<h4>software</h4>
+					<p>We set up a GitHub repository where the code used by the vehicle is stored. The repository contains an ROS package which is designed to be used with our car. The following diagram displays the overall structure of the ROS package: </p>
+					<a href="#" class="image fit"><img src="images/soft.png" alt="" /></a>
+					<p>The overall gist of the package is that two commands are used to achieve the goal of the program. When inputting the command roslaunch autocar autocar_pub.launch the publisher node pub is created. This command also begins running the publisher.py which sends the data from the USB webcam into an openCV program and detects lanes and publishes a value to the /steering and /throttle topic. Then to start the subscriber simply write the command roslaunch autocar autocar_sub.launch after this the car should begin driving autonomously.</p>
+
+					<h4>Publisher</h4>
+					<p>The publisher is a modified and upgraded version of the simple_cv_racer that was provided to us. It takes an image from the USB webcam and uses OpenCV to perform several color masks in a thin region of the photo and converts this into steering and throttle values using a PID controller. It then publishes these values to their respective topics. We created a mask for the yellow of the center line, one for the orange of the turn lanes, and finally one for the white of the outer lanes. These masks were denoised using a kernel of ones that way any small patches of color would be eliminated and would not affect the steering of our car. We then find the largest area of pixels in each mask and find the x coordinate of the center of that area. We then calculate a histogram of the amplitudes for each mask and select the position in the histogram with the highest amplitude as another x coordinate. These two x coordinates are averaged and we then look to see what we got. If there was no orange line detected which indicates that the car is on a straight the car will attempt to steer to the yellow position, it will also lock its wheels so that there will be less deviation from the straight line. If it does detect an orange line indicating that it is on a turn it will drive to a weighted average of the two x coordinates and will unlock its wheels so it has its full range of motion. Unfortunately we are not doing anything with the white data although some ideas we had for it are discussed in the future work section.</p>
+
+					<h4>Subscriber</h4>
+					<p>The subscriber simply subscribes to the two topics and then leverages the Adafruit Servokit library to communicate with the Adafruit PCA9685 and writes the values to the channels specified in the config object.</p>
+
+					<iframe width="560" height="315" src="https://www.youtube.com/embed/-6X8HINvWzQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+					<iframe width="560" height="315" src="https://www.youtube.com/embed/6SFcsYkwFyg" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+				</div>
+			</section>
+
+      <section id="three" class="wrapper style1">
+        <div class="container">
+          <header class="major special">
+            <h2>Skills and Tools</h2>
+            <p>Technology that I used while working on this project</p>
+          </header>
+          <div class="feature-grid">
+            <div class="feature">
+              <div class="image rounded"><img src="images/nano.jpg" alt="" /></div>
+              <div class="content">
+                <header>
+                  <h4>Jetson Nano Developer Kit</h4>
+                  <p>Car's main computer with a micro SD card and fan.</p>
+                </header>
+                <p>Computer on the car that the code with uploaded to. Powered using easily removable batteries in order to stay in constant communication with the car.</p>
+              </div>
+            </div>
+            <div class="feature">
+              <div class="image rounded"><img src="images/opencv3hours.jpg" alt="" /></div>
+              <div class="content">
+                <header>
+                  <h4>OpenCV</h4>
+                  <p>Used software to change the upper and lower color HSV value bounds when detecting lines.</p>
+                </header>
+                <p>A combination of a histogram and centroid method were used to isolate the area where the yellow lines were found. This was effective because if the amount of yellow we want the car to follow isn't specified then the car will speed off randomly. This is because there are small amounts of yellow detected everywhere on the track (including the green).</p>
+              </div>
+            </div>
+            <div class="feature">
+              <div class="image rounded"><img src="images/815-04.jpg" alt="" /></div>
+              <div class="content">
+                <header>
+                  <h4>Adafruit PCA9685 16bit PWM controller</h4>
+                  <p>Accompiened by a ESC</p>
+                </header>
+                <p>Used PID to adjust the steering and throttle depending on what situation the car is in. Programmed to slow car down around curves, and when large amounts of yellow are not present.</p>
+              </div>
+            </div>
+            <div class="feature">
+              <div class="image rounded"><img src="images/download.jpg" alt="" /></div>
+              <div class="content">
+                <header>
+                  <h4>USB Webcam</h4>
+                  <p>Positioned using a 3d printed base</p>
+                </header>
+                <p>Mounted at the front of the car so that it is able to detect yellow pixels. Camera detection window was adjusted using OpenCV because we wanted the car to focus on reacting to what it is right in front of.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+		<!-- Footer -->
+    <footer id="footer">
+      <div class="container">
+        <ul class="icons">
+          <li><a href="https://www.facebook.com/heather.huntley.311/" class="icon fa-facebook"></a></li>
+          <li><a href="https://www.linkedin.com/in/heather-huntley/" class="icon fa-linkedin-square"></a></li>
+          <li><a href="https://www.instagram.com/danielleebrownn/?hl=en" class="icon fa-instagram"></a></li>
+          <li><a href="https://github.com/hehuntle" class="icon fa-github-square"></a></li>
+        </ul>
+    </footer>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+
+</html>
